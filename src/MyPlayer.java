@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 // kjhvfcdxsetdcfvtgbyhnuimko,ovftcdr
 
@@ -29,7 +30,7 @@ public class MyPlayer {
 
     public void Square() {
 
-        losingBoards.add(new Board(1,0,0));
+        losingBoards.add(new Board(1,0,0, new Point(0,0)));
 
         for (a = 1; a < 4; a++) {
             for (b = 0; b <= a; b++) {
@@ -56,11 +57,16 @@ public class MyPlayer {
     public void printResultBoards(int A, int B, int C) {
 
         boolean hasLoser = false;
+        Point goodMove = new Point(0,0);
 
         for (int c2 = C - 1; c2 >= 0; c2--) { // third col
 
             System.out.println(A + " " + B + " " + c2 + " move to make: " + c2 + "," + 2);
-            hasLoser = findLosers(A,B,c2);
+            if (findLosers(A,B,c2) == true) {
+                hasLoser = true;
+                goodMove = new Point(c2, 2);
+            }
+
     // put hasLoser in each thingy with new thingy
         }
 
@@ -69,9 +75,20 @@ public class MyPlayer {
 
             if (b2 < C) {
                 System.out.println(A + " " + b2 + " " + b2 + " move to make: " + b2 + "," + 1);
+                if (findLosers(A,b2,b2) == true) {
+                    hasLoser = true;
+                    goodMove = new Point(b2, 1);
+
+                }
             } else {
                 System.out.println(A + " " + b2 + " " + C + " move to make: " + b2 + "," + 1);
+                if (findLosers(A,b2,C) == true) {
+                    hasLoser = true;
+                    goodMove = new Point(b2, 1);
+
+                }
             }
+
 
         }
 
@@ -80,26 +97,38 @@ public class MyPlayer {
 
             if (a2 < B && a2 < C) {
                 System.out.println(a2 + " " + a2 + " " + a2 + " move to make: " + a2 + "," + 0);
+                if (findLosers(a2,a2,a2) == true) {
+                    hasLoser = true;
+                    goodMove = new Point(a2, 0);
+
+                }
             }
             else if (a2 < B) {
                 System.out.println(a2 + " " + a2 + " " + C + " move to make: " + a2 + "," + 0);
-            }else {
+                if (findLosers(a2,a2,C) == true) {
+                    hasLoser = true;
+                    goodMove = new Point(a2, 0);
 
+                }
+            }else {
                 System.out.println(a2 + " " + B + " " + C + " move to make: " + a2 + "," + 0);
+                if (findLosers(a2,B,C) == true) {
+                    hasLoser = true;
+                    goodMove = new Point(a2, 0);
+
+                }
             }
 
 
 
         }
         // if we found a loser, add ABC to winning boards
+        if (hasLoser == true) {
+            winningBoards.add(new Board( A,B,C, goodMove ));
+        } else {
+            losingBoards.add(new Board(A,B,C, goodMove));
+        }
 
-
-//            winningBoards.add(new Board(A,B,C));
-//
-//
-//            losingBoards.add(new Board(A,B,C));
-//
-        // otherwise, add ABC to losing boards
     }
 
 
@@ -120,8 +149,17 @@ public class MyPlayer {
          * Add your code to return the row and the column of the chip you want to take.
          * You'll be returning a data type called Point which consists of two integers.
          */
-
         Point myMove = new Point(row, column);
+
+        for (int x = 0; x< winningBoards.size();x++){
+            System.out.println(winningBoards.get(x).boardNums[0] + "" + winningBoards.get(x).boardNums[1] + "" + winningBoards.get(x).boardNums[2] + " vs " + columns[0] +  columns[1] + columns[2]);
+            if (winningBoards.get(x).boardNums[0] == columns[0] && winningBoards.get(x).boardNums[1] == columns[1] && winningBoards.get(x).boardNums[2] == columns[2]) {
+                System.out.println("found the board!");
+                myMove = winningBoards.get(x).move;
+            }
+        }
+        System.out.println(myMove);
+
         return myMove;
     }
 
